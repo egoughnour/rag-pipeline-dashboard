@@ -1,5 +1,11 @@
 # RAG Pipeline Dashboard
 
+![CI](https://github.com/egoughnour/rag-pipeline-dashboard/actions/workflows/ci.yml/badge.svg)
+   ![Docker](https://github.com/egoughnour/rag-pipeline-dashboard/actions/workflows/docker.yml/badge.svg)
+   ![License](https://img.shields.io/badge/license-MIT-blue.svg)
+   ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)
+   ![React](https://img.shields.io/badge/React-18-61dafb.svg)
+
 A full-stack application for managing Retrieval-Augmented Generation (RAG) pipelines with real-time monitoring, document processing, and semantic search capabilities.
 
 ## Features
