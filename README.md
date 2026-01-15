@@ -189,17 +189,12 @@ EMBEDDING_PROVIDER=openai  # or voyage, mock
 
 ## Architecture
 
-```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│                 │     │                 │     │                 │
-│    Frontend     │────▶│     Backend     │────▶│   PostgreSQL    │
-│    (React)      │     │   (Express)     │     │   + pgvector    │
-│                 │◀────│                 │◀────│                 │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-        │                       │
-        │    WebSocket          │    Embedding API
-        │◀─────────────────────▶│────────────────▶
-                                │   (OpenAI or Voyage)
+```mermaid
+graph LR
+       A[React Frontend] --> B[Express Backend]
+       B --> C[PostgreSQL + pgvector]
+       B --> D[Embedding API]
+       A <--> |WebSocket| B
 ```
 
 ## CI/CD
