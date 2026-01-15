@@ -1,0 +1,17 @@
+node_modules
+dist
+.env
+.env.*
+*.log
+npm-debug.log*
+tests
+**/*.test.ts
+**/*.spec.ts
+vitest.config.ts
+coverage
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+uploads
