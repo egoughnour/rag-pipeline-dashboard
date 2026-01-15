@@ -4,7 +4,8 @@ let socket: Socket | null = null
 
 export function getSocket(): Socket {
   if (!socket) {
-    socket = io('/', {
+    const wsUrl = import.meta.env.VITE_WS_URL || '/'
+    socket = io(wsUrl, {
       transports: ['websocket'],
       autoConnect: true,
     })
@@ -42,7 +43,7 @@ export interface PipelineStatusEvent {
 export interface DocumentProgressEvent {
   documentId: string
   pipelineId: string
-  status: 'processing' | 'indexed' | 'error'
+  status: 'pending' | 'processing' | 'completed' | 'failed'
   progress?: number
   message?: string
 }

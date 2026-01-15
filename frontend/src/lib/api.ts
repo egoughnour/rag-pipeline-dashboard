@@ -11,20 +11,20 @@ import type {
 } from '@/types'
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   headers: {
     'Content-Type': 'application/json',
   },
 })
 
 // Dashboard
-export async function fetchDashboardMetrics(): Promise<DashboardMetrics> {
-  const { data } = await api.get('/metrics')
+export async function fetchDashboardStats(): Promise<DashboardMetrics> {
+  const { data } = await api.get('/dashboard/stats')
   return data
 }
 
-export async function fetchRecentActivity(): Promise<Activity[]> {
-  const { data } = await api.get('/activity')
+export async function fetchRecentActivity(limit = 20): Promise<Activity[]> {
+  const { data } = await api.get('/dashboard/activity', { params: { limit } })
   return data
 }
 
@@ -41,7 +41,7 @@ export async function fetchPipeline(id: string): Promise<Pipeline> {
 
 export async function createPipeline(pipeline: {
   name: string
-  description?: string
+  description?: string | null
   config: PipelineConfig
 }): Promise<Pipeline> {
   const { data } = await api.post('/pipelines', pipeline)
@@ -52,7 +52,7 @@ export async function updatePipeline(
   id: string,
   pipeline: Partial<Pipeline>
 ): Promise<Pipeline> {
-  const { data } = await api.put(`/pipelines/${id}`, pipeline)
+  const { data } = await api.patch(`/pipelines/${id}`, pipeline)
   return data
 }
 
@@ -70,8 +70,8 @@ export async function stopPipeline(id: string): Promise<Pipeline> {
   return data
 }
 
-export async function fetchPipelineMetrics(id: string): Promise<PipelineMetrics> {
-  const { data } = await api.get(`/metrics/${id}`)
+export async function fetchPipelineMetrics(id: string, hours = 24): Promise<PipelineMetrics> {
+  const { data } = await api.get(`/pipelines/${id}/metrics`, { params: { hours } })
   return data
 }
 
@@ -93,9 +93,8 @@ export async function uploadDocument(
 ): Promise<Document> {
   const formData = new FormData()
   formData.append('file', file)
-  formData.append('pipelineId', pipelineId)
 
-  const { data } = await api.post('/documents', formData, {
+  const { data } = await api.post(`/documents/${pipelineId}/upload`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -113,13 +112,16 @@ export async function fetchDocumentChunks(documentId: string): Promise<Chunk[]> 
 }
 
 // Search
-export async function searchDocuments(query: string, options?: {
-  pipelineId?: string
-  limit?: number
-}): Promise<SearchResult[]> {
+export async function searchDocuments(
+  query: string,
+  options?: {
+    pipelineId?: string
+    limit?: number
+  }
+): Promise<SearchResult[]> {
   const { data } = await api.post('/search', {
     query,
     ...options,
   })
-  return data.results
+  return data
 }

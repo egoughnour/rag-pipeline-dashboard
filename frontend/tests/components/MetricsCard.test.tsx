@@ -10,7 +10,7 @@ describe('MetricsCard', () => {
         title="Test Metric"
         value="42"
         icon={Activity}
-        trend={{ value: 5, isPositive: true }}
+        change={5}
       />
     )
 
@@ -18,33 +18,33 @@ describe('MetricsCard', () => {
     expect(screen.getByText('42')).toBeInTheDocument()
   })
 
-  it('should display positive trend correctly', () => {
+  it('should display positive change correctly', () => {
     render(
       <MetricsCard
         title="Test"
         value="100"
         icon={Activity}
-        trend={{ value: 10, isPositive: true }}
+        change={10}
       />
     )
 
-    expect(screen.getByText('+10%')).toBeInTheDocument()
+    expect(screen.getByText('+10% from last week')).toBeInTheDocument()
   })
 
-  it('should display negative trend correctly', () => {
+  it('should display negative change correctly', () => {
     render(
       <MetricsCard
         title="Test"
         value="100"
         icon={Activity}
-        trend={{ value: 15, isPositive: false }}
+        change={-15}
       />
     )
 
-    expect(screen.getByText('-15%')).toBeInTheDocument()
+    expect(screen.getByText('-15% from last week')).toBeInTheDocument()
   })
 
-  it('should render without trend', () => {
+  it('should render without change', () => {
     render(<MetricsCard title="Test" value="50" icon={Activity} />)
 
     expect(screen.getByText('Test')).toBeInTheDocument()

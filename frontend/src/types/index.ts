@@ -14,19 +14,22 @@ export interface PipelineConfig {
   chunkSize: number
   chunkOverlap: number
   embeddingModel: string
-  sourceType: 'file' | 'url' | 'database'
+  sourceType: 'file' | 'url' | 's3'
+  s3Bucket?: string
+  s3Prefix?: string
 }
 
 export interface Document {
   id: string
   pipelineId: string
-  filename: string
-  contentType: string | null
-  status: 'pending' | 'processing' | 'indexed' | 'error'
-  metadata: Record<string, unknown> | null
-  createdAt: string
-  processedAt: string | null
+  name: string
+  mimeType: string
+  size: number
+  status: 'pending' | 'processing' | 'completed' | 'failed'
   chunkCount?: number
+  errorMessage?: string
+  uploadedAt: string
+  processedAt?: string
 }
 
 export interface Chunk {
@@ -51,17 +54,14 @@ export interface DashboardMetrics {
   totalPipelines: number
   activePipelines: number
   totalDocuments: number
-  documentsProcessed: number
-  documentsProcessing: number
-  documentsPending: number
-  documentsError: number
-  avgProcessingTime: number
   totalChunks: number
+  documentsProcessedToday: number
+  avgProcessingTime: number
 }
 
 export interface Activity {
   id: string
-  type: 'pipeline_created' | 'pipeline_started' | 'pipeline_stopped' | 'document_uploaded' | 'document_processed' | 'search_query'
+  type: 'pipeline_created' | 'pipeline_started' | 'pipeline_stopped' | 'document_uploaded' | 'document_processed' | 'error'
   message: string
   timestamp: string
   pipelineId?: string

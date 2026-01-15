@@ -4,15 +4,15 @@ import MetricsCard from '@/components/Dashboard/MetricsCard'
 import ActivityFeed from '@/components/Dashboard/ActivityFeed'
 import PipelineStatus from '@/components/Dashboard/PipelineStatus'
 import ProcessingChart from '@/components/Dashboard/ProcessingChart'
-import { fetchDashboardMetrics, fetchRecentActivity, fetchPipelines } from '@/lib/api'
+import { fetchDashboardStats, fetchRecentActivity, fetchPipelines } from '@/lib/api'
 import { useWebSocket } from '@/hooks/useWebSocket'
 
 export default function Dashboard() {
   useWebSocket()
 
   const { data: metrics, isLoading: metricsLoading } = useQuery({
-    queryKey: ['metrics'],
-    queryFn: fetchDashboardMetrics,
+    queryKey: ['dashboard-stats'],
+    queryFn: fetchDashboardStats,
   })
 
   const { data: activity = [] } = useQuery({
@@ -57,24 +57,22 @@ export default function Dashboard() {
           iconColor="text-blue-500"
         />
         <MetricsCard
-          title="Documents Indexed"
-          value={metrics?.documentsProcessed ?? 0}
-          change={12}
+          title="Documents Today"
+          value={metrics?.documentsProcessedToday ?? 0}
           icon={FileText}
           iconColor="text-green-500"
         />
         <MetricsCard
           title="Avg Processing Time"
-          value={`${metrics?.avgProcessingTime ?? 0}ms`}
-          change={-8}
+          value={`${Math.round(metrics?.avgProcessingTime ?? 0)}ms`}
           icon={Clock}
           iconColor="text-purple-500"
         />
         <MetricsCard
-          title="Error Rate"
-          value={`${((metrics?.documentsError ?? 0) / Math.max(metrics?.totalDocuments ?? 1, 1) * 100).toFixed(1)}%`}
+          title="Total Chunks"
+          value={metrics?.totalChunks ?? 0}
           icon={AlertCircle}
-          iconColor="text-red-500"
+          iconColor="text-indigo-500"
         />
       </div>
 

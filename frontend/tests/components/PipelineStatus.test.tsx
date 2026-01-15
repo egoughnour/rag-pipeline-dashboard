@@ -52,8 +52,8 @@ describe('PipelineStatus', () => {
   it('should display correct status badges', () => {
     renderWithRouter(<PipelineStatus pipelines={mockPipelines} />)
 
-    expect(screen.getByText('active')).toBeInTheDocument()
-    expect(screen.getByText('paused')).toBeInTheDocument()
+    expect(screen.getByText('Active')).toBeInTheDocument()
+    expect(screen.getByText('Paused')).toBeInTheDocument()
   })
 
   it('should show document counts', () => {
@@ -66,6 +66,6 @@ describe('PipelineStatus', () => {
   it('should show empty state when no pipelines', () => {
     renderWithRouter(<PipelineStatus pipelines={[]} />)
 
-    expect(screen.getByText('No pipelines created yet')).toBeInTheDocument()
+    expect(screen.getByText('No pipelines configured')).toBeInTheDocument()
   })
 })
