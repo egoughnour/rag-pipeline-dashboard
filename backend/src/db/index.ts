@@ -16,7 +16,7 @@ pool.on('error', (err) => {
   console.error('PostgreSQL pool error:', err)
 })
 
-export async function query<T = unknown>(
+export async function query<T extends pg.QueryResultRow = pg.QueryResultRow>(
   text: string,
   params?: unknown[]
 ): Promise<pg.QueryResult<T>> {
