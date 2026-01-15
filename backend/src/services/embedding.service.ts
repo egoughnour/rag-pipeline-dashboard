@@ -1,12 +1,7 @@
-import OpenAI from 'openai'
-import { config } from '../config.js'
 import { query, transaction } from '../db/index.js'
-import type { SearchResult, Chunk } from '../types/index.js'
+import type { SearchResult } from '../types/index.js'
+import { getEmbeddingProvider } from './embeddings/index.js'
 import * as pipelineService from './pipeline.service.js'
-
-const openai = new OpenAI({
-  apiKey: config.openaiApiKey,
-})
 
 interface ChunkRow {
   id: string
@@ -17,31 +12,39 @@ interface ChunkRow {
   similarity: string
 }
 
-export async function generateEmbedding(
-  text: string,
-  model: string = 'text-embedding-3-small'
-): Promise<number[]> {
-  const response = await openai.embeddings.create({
-    model,
-    input: text,
-  })
+export async function generateEmbedding(text: string, model?: string): Promise<number[]> {
+  const provider = getEmbeddingProvider()
+  return provider.embed(text, model)
+}
 
-  return response.data[0].embedding
+export async function generateEmbeddings(texts: string[], model?: string): Promise<number[][]> {
+  const provider = getEmbeddingProvider()
+  return provider.embedBatch(texts, model)
+}
+
+export function getEmbeddingDimension(model?: string): number {
+  const provider = getEmbeddingProvider()
+  return provider.getDimension(model)
 }
 
 export async function createChunks(
   documentId: string,
   pipelineId: string,
   chunks: Array<{ content: string; metadata?: Record<string, unknown> }>,
-  embeddingModel: string
+  embeddingModel?: string
 ): Promise<number> {
   const startTime = Date.now()
+  const provider = getEmbeddingProvider()
 
   return await transaction(async (client) => {
-    let chunkIndex = 0
+    // Batch embed all chunks at once for efficiency
+    const texts = chunks.map((c) => c.content)
+    const embeddings = await provider.embedBatch(texts, embeddingModel)
 
-    for (const chunk of chunks) {
-      const embedding = await generateEmbedding(chunk.content, embeddingModel)
+    let chunkIndex = 0
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i]
+      const embedding = embeddings[i]
 
       await client.query(
         `
@@ -75,12 +78,14 @@ export async function searchChunks(
   options: {
     pipelineId?: string
     limit?: number
+    model?: string
   } = {}
 ): Promise<SearchResult[]> {
-  const { pipelineId, limit = 20 } = options
+  const { pipelineId, limit = 20, model } = options
 
   // Generate embedding for query
-  const queryEmbedding = await generateEmbedding(queryText)
+  const provider = getEmbeddingProvider()
+  const queryEmbedding = await provider.embed(queryText, model)
 
   let sql = `
     SELECT
