@@ -1,13 +1,26 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
 import request from 'supertest'
-import express from 'express'
+import express, { Request, Response, NextFunction } from 'express'
+import { ZodError } from 'zod'
 import { pool } from '../../src/db/index.js'
 import pipelinesRouter from '../../src/routes/pipelines.js'
 
-// Set up test app
+// Set up test app with error handler
 const app = express()
 app.use(express.json())
 app.use('/api/pipelines', pipelinesRouter)
+
+// Error handler for Zod validation errors
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  if (err instanceof ZodError) {
+    res.status(400).json({
+      error: 'Validation error',
+      details: err.errors,
+    })
+    return
+  }
+  res.status(500).json({ error: err.message })
+})
 
 describe('Pipelines API', () => {
   // Skip if no database connection

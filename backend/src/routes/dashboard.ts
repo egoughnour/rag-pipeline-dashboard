@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import asyncHandler from 'express-async-handler'
 import * as activityService from '../services/activity.service.js'
-import * as embeddingService from '../services/embedding.service.js'
 
 const router = Router()
 

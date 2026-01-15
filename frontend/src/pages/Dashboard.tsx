@@ -17,7 +17,7 @@ export default function Dashboard() {
 
   const { data: activity = [] } = useQuery({
     queryKey: ['activity'],
-    queryFn: fetchRecentActivity,
+    queryFn: () => fetchRecentActivity(),
   })
 
   const { data: pipelines = [] } = useQuery({

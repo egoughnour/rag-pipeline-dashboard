@@ -19,6 +19,7 @@ const activityIcons: Record<Activity['type'], typeof GitBranch> = {
   document_uploaded: FileText,
   document_processed: FileText,
   search_query: Search,
+  error: AlertCircle,
 }
 
 const activityColors: Record<Activity['type'], string> = {
@@ -28,6 +29,7 @@ const activityColors: Record<Activity['type'], string> = {
   document_uploaded: 'bg-purple-100 text-purple-600',
   document_processed: 'bg-green-100 text-green-600',
   search_query: 'bg-orange-100 text-orange-600',
+  error: 'bg-red-100 text-red-600',
 }
 
 export default function ActivityFeed({ activities }: ActivityFeedProps) {

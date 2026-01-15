@@ -1,5 +1,4 @@
 import fs from 'fs/promises'
-import path from 'path'
 
 interface ChunkOptions {
   chunkSize: number
@@ -119,15 +118,17 @@ export async function extractTextFromFile(
     case 'text/csv':
       return buffer.toString('utf-8')
 
-    case 'application/pdf':
+    case 'application/pdf': {
       // Dynamic import for pdf-parse
       const pdfParse = (await import('pdf-parse')).default
       const pdfData = await pdfParse(buffer)
       return pdfData.text
+    }
 
-    case 'application/json':
+    case 'application/json': {
       const json = JSON.parse(buffer.toString('utf-8'))
       return JSON.stringify(json, null, 2)
+    }
 
     default:
       // Try to read as text for unknown types

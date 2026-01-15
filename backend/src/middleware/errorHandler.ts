@@ -11,7 +11,7 @@ export function errorHandler(
   err: ApiError,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void {
   // Log error in development
   if (config.nodeEnv === 'development') {

@@ -65,9 +65,14 @@ CREATE INDEX IF NOT EXISTS idx_chunks_pipeline_id ON chunks(pipeline_id);
 CREATE INDEX IF NOT EXISTS idx_activities_timestamp ON activities(timestamp DESC);
 CREATE INDEX IF NOT EXISTS idx_metrics_pipeline_timestamp ON metrics(pipeline_id, timestamp DESC);
 
--- Vector similarity index (IVFFlat for approximate nearest neighbor)
+-- Note: IVFFlat index requires data to be created effectively.
+-- For production, run this after inserting initial data:
+-- CREATE INDEX IF NOT EXISTS idx_chunks_embedding ON chunks
+-- USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
+--
+-- For now, use HNSW which doesn't require pre-existing data:
 CREATE INDEX IF NOT EXISTS idx_chunks_embedding ON chunks
-USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
+USING hnsw (embedding vector_cosine_ops);
 
 -- Function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()

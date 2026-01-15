@@ -61,7 +61,7 @@ export interface DashboardMetrics {
 
 export interface Activity {
   id: string
-  type: 'pipeline_created' | 'pipeline_started' | 'pipeline_stopped' | 'document_uploaded' | 'document_processed' | 'error'
+  type: 'pipeline_created' | 'pipeline_started' | 'pipeline_stopped' | 'document_uploaded' | 'document_processed' | 'search_query' | 'error'
   message: string
   timestamp: string
   pipelineId?: string

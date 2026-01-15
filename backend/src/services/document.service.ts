@@ -1,4 +1,4 @@
-import { query, transaction } from '../db/index.js'
+import { query } from '../db/index.js'
 import type { Document } from '../types/index.js'
 
 interface DocumentRow {

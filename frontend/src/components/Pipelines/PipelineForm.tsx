@@ -26,7 +26,7 @@ export default function PipelineForm({ onClose }: PipelineFormProps) {
 
     await createPipeline.mutateAsync({
       name,
-      description: description || null,
+      description: description || undefined,
       config,
     })
 
